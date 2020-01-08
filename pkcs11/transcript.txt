@@ -1,0 +1,29 @@
+
+
+find / -iname "java.security"
+
+/etc/java-9-oracle/conf/security/java.security
+
+add to security /etc/softhsm/pkcs11.cfg
+
+find / -iname "*hsm*.so"
+
+vim /etc/softhsm/pkcs11.cfg
+
+name = SoftHSM
+library = /usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so
+slotListIndex = 0
+
+
+softhsm2-util --init-token --slot 0 --label "My token 1" --pin 1234 --so-pin 1234
+
+softhsm2-util --show-slots
+
+keytool -list -storetype "PKCS11" -storepass 1234
+
+java -jar /opt/engsec/engsec.jar test
+
+keytool -list -storetype "PKCS11" -storepass 1234
+
+
+/opt/engsec/src/main/java/engsec/cmds/PKCS11Test.java
